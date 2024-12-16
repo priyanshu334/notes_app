@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:notesapp/components/note_tile.dart';
 import 'package:notesapp/main.dart';
 import 'package:notesapp/models/note.dart';
 import 'package:notesapp/models/note_database.dart';
@@ -57,7 +59,8 @@ class _NotesPageState extends State<NotesPage> {
               ],
             ));
   }
-  void deleteNote(int id){
+
+  void deleteNote(int id) {
     context.read<NoteDatabase>().deleteNote(id);
   }
 
@@ -72,27 +75,38 @@ class _NotesPageState extends State<NotesPage> {
     List<Note> currentNodes = noteDatabase.currentNotes;
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        foregroundColor: Theme.of(context).colorScheme.inversePrimary,
+        elevation: 0,
         title: Text("Notes"),
       ),
+      backgroundColor: Theme.of(context).colorScheme.surface,
       floatingActionButton: FloatingActionButton(
         onPressed: createNote,
         child: const Icon(Icons.add),
       ),
-      body: ListView.builder(
-          itemCount: currentNodes.length,
-          itemBuilder: (context, index) {
-            final note = currentNodes[index];
-            return ListTile(
-              title: Text(note.text),
-              trailing: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  IconButton(onPressed: ()=>updateNote(note), icon: Icon(Icons.edit)),
-                  IconButton(onPressed: ()=>deleteNote(note.id), icon: Icon(Icons.delete))
-                ],
-              ),
-            );
-          }),
+      drawer: Drawer(),
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(left: 25),
+            child: Text("Notes",
+                style: GoogleFonts.dmSerifText(
+                  fontSize: 48,
+                  color: Theme.of(context).colorScheme.inversePrimary,
+                )),
+          ),
+          Expanded(
+            child: ListView.builder(
+                itemCount: currentNodes.length,
+                itemBuilder: (context, index) {
+                  final note = currentNodes[index];
+                  return NoteTile(text: textController.text,onEditPressed: ()=>updateNote,onDeletePressed: ()=>deleteNote,);
+                }),
+          ),
+        ],
+      ),
     );
   }
 }
